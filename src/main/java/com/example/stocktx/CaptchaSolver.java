@@ -42,7 +42,7 @@ public class CaptchaSolver implements AutoCloseable {
 
 		this.tessApi = new TessBaseAPI();
 		if (tessApi.Init(tessdataDir.getAbsolutePath(), "eng") != 0) {
-			throw new IllegalStateException("Could not initialize tesseract.");
+			throw new IllegalStateException("無法初始化 TessApi");
 		}
 
 	}
@@ -53,7 +53,7 @@ public class CaptchaSolver implements AutoCloseable {
 		Mat captcha = imread(imgFile.getAbsolutePath(), IMREAD_GRAYSCALE);
 
 		if (captcha.empty()) {
-			throw new RuntimeException("Cannot read captcha image file");
+			throw new RuntimeException("無法讀取 Captcha 影像檔: "+imgFile.getAbsolutePath());
 		}
 
 		// 二值化
