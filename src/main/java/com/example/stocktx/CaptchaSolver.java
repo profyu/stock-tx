@@ -31,10 +31,12 @@ public class CaptchaSolver implements AutoCloseable {
 
 	public CaptchaSolver() throws IOException {
 
+		// 創建 tesseract 臨時工作區
 		this.workspaceDir = Files.createTempDirectory("captcha-solver-ws").toFile();
 		this.tessdataDir = new File(workspaceDir, "tessdata");
 		tessdataDir.mkdir();
 
+		// 複製 eng.traineddata 進工作區內的 tessdata 資料夾下
 		File trainedFile = new File(tessdataDir, "eng.traineddata");
 		FileUtils.copyToFile(CaptchaSolver.class.getResourceAsStream("/trained/eng.traineddata"), trainedFile);
 
@@ -73,12 +75,12 @@ public class CaptchaSolver implements AutoCloseable {
 
 	private String imgToString(Mat img) {
 		
+		// void tesseract::TessBaseAPI::SetImage(const unsigned char * imagedata, int width, int height, int bytes_per_pixel, int bytes_per_line)		
 		tessApi.SetImage(img.data(), img.cols(), img.rows(), 1, img.cols());
 
 		BytePointer outText = tessApi.GetUTF8Text();
 		String s = outText.getString();
 
-		// Destroy used object and release memory
 		outText.deallocate();
 
 		return s.replaceAll("[^0-9-A-Z]", "");
